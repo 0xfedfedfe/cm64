@@ -32,9 +32,13 @@ $(eval $(call validate-option,COMPILER,ido gcc))
 # Automatic settings only for ports
 ifeq ($(TARGET_N64),0)
 
+<<<<<<< HEAD
   COMPILER := gcc
   NON_MATCHING := 1
   GRUCODE := f3dex2e
+=======
+  GRUCODE := f3dex2
+>>>>>>> e187430 (weird ido issue)
   TARGET_WINDOWS := 0
   ifeq ($(TARGET_WEB),0)
     ifeq ($(OS),Windows_NT)
@@ -81,10 +85,6 @@ ifeq ($(TARGET_N64),0)
     endif
   endif
 
-endif
-
-ifeq ($(COMPILER),gcc)
-  NON_MATCHING := 1
 endif
 
 # VERSION - selects the version of the game to build
@@ -160,8 +160,13 @@ ifeq      ($(COMPILER),ido)
   endif
 
   MIPSISET := -mips2
+<<<<<<< HEAD
 else ifeq ($(COMPILER),gcc)
   NON_MATCHING := 1
+=======
+else
+  ifeq ($(COMPILER),gcc)
+>>>>>>> e187430 (weird ido issue)
   MIPSISET     := -mips3
   OPT_FLAGS    := -O2
 endif
@@ -174,30 +179,12 @@ ifeq ($(TARGET_N64),0)
   endif
 endif
 
-
-# NON_MATCHING - whether to build a matching, identical copy of the ROM
-#   1 - enable some alternate, more portable code that does not produce a matching ROM
-#   0 - build a matching ROM
-NON_MATCHING ?= 0
-$(eval $(call validate-option,NON_MATCHING,0 1))
+NON_MATCHING = 1
 
 ifeq ($(NON_MATCHING),1)
   DEFINES += NON_MATCHING=1 AVOID_UB=1
-  COMPARE := 0
 endif
 
-
-# COMPARE - whether to verify the SHA-1 hash of the ROM after building
-#   1 - verifies the SHA-1 hash of the selected version of the game
-#   0 - does not verify the hash
-COMPARE ?= 1
-$(eval $(call validate-option,COMPARE,0 1))
-
-TARGET_STRING := sm64.$(VERSION).$(GRUCODE)
-# If non-default settings were chosen, disable COMPARE
-ifeq ($(filter $(TARGET_STRING), sm64.jp.f3d_old sm64.us.f3d_old sm64.eu.f3d_new sm64.sh.f3d_new),)
-  COMPARE := 0
-endif
 
 # Whether to hide commands or not
 VERBOSE ?= 0
@@ -214,16 +201,6 @@ ifeq ($(filter clean distclean,$(MAKECMDGOALS)),)
   $(info Version:        $(VERSION))
   $(info Microcode:      $(GRUCODE))
   $(info Target:         $(TARGET))
-  ifeq ($(COMPARE),1)
-    $(info Compare ROM:    yes)
-  else
-    $(info Compare ROM:    no)
-  endif
-  ifeq ($(NON_MATCHING),1)
-    $(info Build Matching: no)
-  else
-    $(info Build Matching: yes)
-  endif
   $(info =======================)
 endif
 
@@ -366,17 +343,6 @@ GODDARD_O_FILES := $(foreach file,$(GODDARD_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
 
 # Automatic dependency files
 DEP_FILES := $(O_FILES:.o=.d) $(ULTRA_O_FILES:.o=.d) $(GODDARD_O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
-
-# Files with GLOBAL_ASM blocks
-ifeq ($(NON_MATCHING),0)
-  ifeq ($(VERSION),sh)
-    GLOBAL_ASM_C_FILES != grep -rl 'GLOBAL_ASM(' $(wildcard src/**/*.c) $(wildcard lib/src/*.c)
-  else
-    GLOBAL_ASM_C_FILES != grep -rl 'GLOBAL_ASM(' $(wildcard src/**/*.c)
-  endif
-GLOBAL_ASM_O_FILES = $(foreach file,$(GLOBAL_ASM_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
-GLOBAL_ASM_DEP = $(BUILD_DIR)/src/audio/non_matching_dep
-endif
 
 
 #==============================================================================#
@@ -587,10 +553,6 @@ endef
 
 ifeq ($(TARGET_N64),1)
 all: $(ROM)
-ifeq ($(COMPARE),1)
-	@$(PRINT) "$(GREEN)Checking if ROM matches.. $(NO_COL)\n"
-	@$(SHA1SUM) --quiet -c $(TARGET).sha1 && $(PRINT) "$(TARGET): $(GREEN)OK$(NO_COL)\n" || ($(PRINT) "$(YELLOW)Building the ROM file has succeeded, but does not match the original ROM.\nThis is expected, and not an error, if you are making modifications.\nTo silence this message, use 'make COMPARE=0.' $(NO_COL)\n" && false)
-endif
 else
 all: $(EXE)
 endif
@@ -811,17 +773,6 @@ $(BUILD_DIR)/text/%/define_text.inc.c: text/define_text.inc.c text/%/courses.h t
 $(BUILD_DIR)/include/level_headers.h: levels/level_headers.h.in
 	$(call print,Preprocessing level headers:,$<,$@)
 	$(V)$(CPP) $(CPPFLAGS) -I . $< | sed -E 's|(.+)|#include "\1"|' > $@
-
-# Run asm_processor on files that have NON_MATCHING code
-ifeq ($(NON_MATCHING),0)
-$(GLOBAL_ASM_O_FILES): CC := $(V)$(PYTHON) $(TOOLS_DIR)/asm_processor/build.py $(CC) -- $(AS) $(ASFLAGS) --
-endif
-
-# Rebuild files with 'GLOBAL_ASM' if the NON_MATCHING flag changes.
-$(GLOBAL_ASM_O_FILES): $(GLOBAL_ASM_DEP).$(NON_MATCHING)
-$(GLOBAL_ASM_DEP).$(NON_MATCHING):
-	@$(RM) $(GLOBAL_ASM_DEP).*
-	$(V)touch $@
 
 
 #==============================================================================#
