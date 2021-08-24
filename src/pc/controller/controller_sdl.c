@@ -23,6 +23,18 @@ static void controller_sdl_init(void) {
     }
 
     init_ok = true;
+
+    for (int i = 0; i < SDL_NumJoysticks(); i++) {
+        if (SDL_IsGameController(i)) {
+            sdl_cntrl = SDL_GameControllerOpen(i);
+            if (sdl_cntrl != NULL) {
+            	printf("Using SDL2 controller %s\n", SDL_GameControllerNameForIndex(i));
+    		return;
+            }
+        }
+    }
+
+    puts("No SDL2 controllers found.");
 }
 
 static void controller_sdl_read(OSContPad *pad) {
@@ -36,18 +48,9 @@ static void controller_sdl_read(OSContPad *pad) {
         SDL_GameControllerClose(sdl_cntrl);
         sdl_cntrl = NULL;
     }
+    
     if (sdl_cntrl == NULL) {
-        for (int i = 0; i < SDL_NumJoysticks(); i++) {
-            if (SDL_IsGameController(i)) {
-                sdl_cntrl = SDL_GameControllerOpen(i);
-                if (sdl_cntrl != NULL) {
-                    break;
-                }
-            }
-        }
-        if (sdl_cntrl == NULL) {
-            return;
-        }
+        return;
     }
 
     if (SDL_GameControllerGetButton(sdl_cntrl, SDL_CONTROLLER_BUTTON_START)) pad->button |= START_BUTTON;

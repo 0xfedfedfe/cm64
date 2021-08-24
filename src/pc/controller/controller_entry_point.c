@@ -21,8 +21,7 @@ static struct ControllerAPI *controller_implementations[] = {
 #if defined(_WIN32) || defined(_WIN64)
     &controller_xinput,
 #else
-    //sdl is MOLESTING frame time, wtf?
-    //&controller_sdl,
+    &controller_sdl,
 #endif
 #ifdef __linux__
     &controller_wup,
