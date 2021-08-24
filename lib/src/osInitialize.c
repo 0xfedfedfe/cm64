@@ -1,6 +1,7 @@
 #include "libultra_internal.h"
 #include "hardware.h"
 #include <macros.h>
+#include <PR/console_type.h>
 
 #define PIF_ADDR_START (void *) 0x1FC007FC
 
@@ -51,6 +52,7 @@ void osInitialize(void) {
     UNUSED u32 eu_sp30;
 #endif
     UNUSED u32 sp2c;
+    gConsoleType = get_console_type();
     D_80365CD0 = TRUE;
     __osSetSR(__osGetSR() | 0x20000000);
     __osSetFpcCsr(0x01000800);

@@ -1,4 +1,5 @@
 #include "libultra_internal.h"
+#include <PR/console_type.h>
 
 extern u8 _osLastSentSiCmd;
 
@@ -42,33 +43,44 @@ s32 osEepromRead(OSMesgQueue *mq, u8 address, u8 *buffer) {
         return -1;
     }
     __osSiGetAccess();
-    sp34 = __osEepStatus(mq, &sp28);
-    if (sp34 != 0 || sp28.unk00 != 0x8000) {
+    if (gConsoleType == CONSOLE_N64) {
+        sp34 = __osEepStatus(mq, &sp28);
+        if (sp34 != 0 || sp28.unk00 != 0x8000) {
 
-        return 8;
-    }
-    while (sp28.unk02 & 0x80) {
-        __osEepStatus(mq, &sp28);
-    }
-    __osPackEepReadData(address);
-    sp34 = __osSiRawStartDma(OS_WRITE, &D_80365E00);
-    osRecvMesg(mq, NULL, OS_MESG_BLOCK);
-    for (sp30 = 0; sp30 < 0x10; sp30++) {
-        (D_80365E00)[sp30] = 255;
-    }
-    D_80365E3C = 0;
-    sp34 = __osSiRawStartDma(OS_READ, D_80365E00);
-    _osLastSentSiCmd = 4;
-    osRecvMesg(mq, NULL, OS_MESG_BLOCK);
-    for (sp30 = 0; sp30 < 4; sp30++) {
-        sp2c++;
-    }
-    sp20 = *(unkStruct2 *) sp2c;
-    sp34 = (sp20.unk01 & 0xc0) >> 4;
-    if (sp34 == 0) {
-        for (sp30 = 0; sp30 < 8; sp30++) {
-            *buffer++ = ((u8 *) &sp20.unk04)[sp30];
+            return 8;
         }
+        while (sp28.unk02 & 0x80) {
+            __osEepStatus(mq, &sp28);
+        }
+        __osPackEepReadData(address);
+        sp34 = __osSiRawStartDma(OS_WRITE, &D_80365E00);
+        osRecvMesg(mq, NULL, OS_MESG_BLOCK);
+        for (sp30 = 0; sp30 < 0x10; sp30++) {
+            (D_80365E00)[sp30] = 255;
+        }
+        D_80365E3C = 0;
+        sp34 = __osSiRawStartDma(OS_READ, D_80365E00);
+        _osLastSentSiCmd = 4;
+        osRecvMesg(mq, NULL, OS_MESG_BLOCK);
+        for (sp30 = 0; sp30 < 4; sp30++) {
+            sp2c++;
+        }
+        sp20 = *(unkStruct2 *) sp2c;
+        sp34 = (sp20.unk01 & 0xc0) >> 4;
+        if (sp34 == 0) {
+            for (sp30 = 0; sp30 < 8; sp30++) {
+                *buffer++ = ((u8 *) &sp20.unk04)[sp30];
+            }
+        }
+    } else if (gConsoleType == CONSOLE_IQUE) {
+        u8 *__osBbEepromAddress = * (u8**) 0x8000035C;
+        s32 i;
+
+        for (i = 0; i < 8; i++) {
+            buffer[i] = __osBbEepromAddress[(address << 3) + i];
+        }
+
+        sp34 = 0;
     }
     __osSiRelAccess();
     return sp34;

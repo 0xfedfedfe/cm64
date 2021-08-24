@@ -310,6 +310,8 @@ SECTIONS
 #if ENABLE_RUMBLE
       BUILD_DIR/libultra.a:unk_shindou_file_3.o(.text);
 #endif
+      BUILD_DIR/libultra.a:consoleType.o(.text)
+      BUILD_DIR/libultra.a:skGetId.o(.text)
       BUILD_DIR/lib/rsp.o(.text);
 #else
       BUILD_DIR/src/game*.o(.text);
@@ -432,6 +434,8 @@ SECTIONS
 #if ENABLE_RUMBLE
       BUILD_DIR/libultra.a:unk_shindou_file_3.o(.text);
 #endif
+      BUILD_DIR/libultra.a:consoleType.o(.text)
+      BUILD_DIR/libultra.a:skGetId.o(.text)
       BUILD_DIR/lib/rsp.o(.text);
 #endif
 

@@ -54,7 +54,9 @@ void __osViSwapContext() {
     HW_REG(VI_INTR_REG, u32) = s0->fldRegs[field].vIntr;
     HW_REG(VI_X_SCALE_REG, u32) = s1->unk20;
     HW_REG(VI_Y_SCALE_REG, u32) = s1->unk2c;
-    HW_REG(VI_CONTROL_REG, u32) = s1->features;
+    /* Make sure bit 13 is cleared. Otherwise, graphics will be corrupted on
+     * iQue Player. This has no effect on N64. */
+    HW_REG(VI_CONTROL_REG, u32) = s1->features & ~(1 << 13);
     __osViNext = __osViCurr;
     __osViCurr = s1;
     *__osViNext = *__osViCurr;
