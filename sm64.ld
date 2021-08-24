@@ -22,26 +22,26 @@ OUTPUT_ARCH (mips)
 #define END_NOLOAD(name) \
     _##name##SegmentNoloadEnd = ADDR(.name.noload) + SIZEOF(.name.noload);
 
-#define MIO0_SEG(name, segAddr) \
-   BEGIN_SEG(name##_mio0, segAddr) \
+#define RNC2_SEG(name, segAddr) \
+   BEGIN_SEG(name##_rnc2, segAddr) \
    { \
-      BUILD_DIR/bin/name.mio0.o(.data); \
+      BUILD_DIR/bin/name.rnc2.o(.data); \
       . = ALIGN(0x10); \
    } \
-   END_SEG(name##_mio0)
+   END_SEG(name##_rnc2)
 
-#define MIO0_EU_SEG(name, segAddr) \
-   BEGIN_SEG(name##_mio0, segAddr) \
+#define RNC2_EU_SEG(name, segAddr) \
+   BEGIN_SEG(name##_rnc2, segAddr) \
    { \
-      BUILD_DIR/bin/eu/name.mio0.o(.data); \
+      BUILD_DIR/bin/eu/name.rnc2.o(.data); \
       . = ALIGN(0x10); \
    } \
-   END_SEG(name##_mio0)
+   END_SEG(name##_rnc2)
 
 #define STANDARD_LEVEL(name) \
    BEGIN_SEG(name##_segment_7, 0x07000000) \
    { \
-      BUILD_DIR/levels/name/leveldata.mio0.o(.data); \
+      BUILD_DIR/levels/name/leveldata.rnc2.o(.data); \
       . = ALIGN(0x10); \
    } \
    END_SEG(name##_segment_7) \
@@ -53,12 +53,12 @@ OUTPUT_ARCH (mips)
    END_SEG(name)
 
 #define STANDARD_OBJECTS(name, segAddr, geoAddr) \
-   BEGIN_SEG(name##_mio0, segAddr) \
+   BEGIN_SEG(name##_rnc2, segAddr) \
    { \
-      BUILD_DIR/actors/name.mio0.o(.data); \
+      BUILD_DIR/actors/name.rnc2.o(.data); \
       . = ALIGN(0x10); \
    } \
-   END_SEG(name##_mio0) \
+   END_SEG(name##_rnc2) \
    BEGIN_SEG(name##_geo, geoAddr) \
    { \
       BUILD_DIR/actors/name##_geo.o(.data); \
@@ -461,6 +461,7 @@ SECTIONS
       BUILD_DIR/src/game/area.o(.data*);
       BUILD_DIR/src/game/rendering_graph_node.o(.data*);
       BUILD_DIR/src/game/profiler.o(.data*);
+      BUILD_DIR/asm/decompress.o(.data*);
       BUILD_DIR/src/game/camera.o(.data*);
       BUILD_DIR/src/game/object_list_processor.o(.data*);
 #ifndef VERSION_EU
@@ -861,12 +862,12 @@ SECTIONS
    }
    END_SEG(entry)
 
-   /* load MIO0 and level data */
-   MIO0_SEG(segment2, 0x02000000)
+   /* load RNC2 and level data */
+   RNC2_SEG(segment2, 0x02000000)
 #ifdef VERSION_EU
-   MIO0_EU_SEG(translation_en, 0x19000000)
-   MIO0_EU_SEG(translation_fr, 0x19000000)
-   MIO0_EU_SEG(translation_de, 0x19000000)
+   RNC2_EU_SEG(translation_en, 0x19000000)
+   RNC2_EU_SEG(translation_fr, 0x19000000)
+   RNC2_EU_SEG(translation_de, 0x19000000)
 #endif
 
    /* mario actor group */
@@ -1027,13 +1028,13 @@ SECTIONS
    END_SEG(intro)
    BEGIN_SEG(intro_segment_7, 0x07000000)
    {
-      BUILD_DIR/levels/intro/leveldata.mio0.o(.data);
+      BUILD_DIR/levels/intro/leveldata.rnc2.o(.data);
       . = ALIGN(0x10);
    }
    END_SEG(intro_segment_7)
 
-   MIO0_SEG(debug_level_select, 0x07000000)
-   MIO0_SEG(title_screen_bg, 0x0A000000)
+   RNC2_SEG(debug_level_select, 0x07000000)
+   RNC2_SEG(title_screen_bg, 0x0A000000)
 
    /* 271B20-2A42A0 [32780] */
    BEGIN_SEG(gd_dynlists, 0x04000000)
@@ -1068,7 +1069,7 @@ SECTIONS
    END_SEG(menu)
    BEGIN_SEG(menu_segment_7, 0x07000000)
    {
-      BUILD_DIR/levels/menu/leveldata.mio0.o(.data);
+      BUILD_DIR/levels/menu/leveldata.rnc2.o(.data);
       . = ALIGN(0x10);
    }
    END_SEG(menu_segment_7)
@@ -1079,31 +1080,31 @@ SECTIONS
    }
    END_SEG(scripts)
 
-   MIO0_SEG(water_skybox, 0x0A000000)
-   MIO0_SEG(ccm_skybox, 0x0A000000)
-   MIO0_SEG(clouds_skybox, 0x0A000000)
-   MIO0_SEG(bitfs_skybox, 0x0A000000)
-   MIO0_SEG(wdw_skybox, 0x0A000000)
-   MIO0_SEG(cloud_floor_skybox, 0x0A000000)
-   MIO0_SEG(ssl_skybox, 0x0A000000)
-   MIO0_SEG(bbh_skybox, 0x0A000000)
-   MIO0_SEG(bidw_skybox, 0x0A000000)
-   MIO0_SEG(bits_skybox, 0x0A000000)
+   RNC2_SEG(water_skybox, 0x0A000000)
+   RNC2_SEG(ccm_skybox, 0x0A000000)
+   RNC2_SEG(clouds_skybox, 0x0A000000)
+   RNC2_SEG(bitfs_skybox, 0x0A000000)
+   RNC2_SEG(wdw_skybox, 0x0A000000)
+   RNC2_SEG(cloud_floor_skybox, 0x0A000000)
+   RNC2_SEG(ssl_skybox, 0x0A000000)
+   RNC2_SEG(bbh_skybox, 0x0A000000)
+   RNC2_SEG(bidw_skybox, 0x0A000000)
+   RNC2_SEG(bits_skybox, 0x0A000000)
 
    // Texture bins
-   MIO0_SEG(fire, 0x09000000)
-   MIO0_SEG(spooky, 0x09000000)
-   MIO0_SEG(generic, 0x09000000)
-   MIO0_SEG(water, 0x09000000)
-   MIO0_SEG(sky, 0x09000000)
-   MIO0_SEG(snow, 0x09000000)
-   MIO0_SEG(cave, 0x09000000)
-   MIO0_SEG(machine, 0x09000000)
-   MIO0_SEG(mountain, 0x09000000)
-   MIO0_SEG(grass, 0x09000000)
-   MIO0_SEG(outside, 0x09000000)
-   MIO0_SEG(inside, 0x09000000)
-   MIO0_SEG(effect, 0x0B000000)
+   RNC2_SEG(fire, 0x09000000)
+   RNC2_SEG(spooky, 0x09000000)
+   RNC2_SEG(generic, 0x09000000)
+   RNC2_SEG(water, 0x09000000)
+   RNC2_SEG(sky, 0x09000000)
+   RNC2_SEG(snow, 0x09000000)
+   RNC2_SEG(cave, 0x09000000)
+   RNC2_SEG(machine, 0x09000000)
+   RNC2_SEG(mountain, 0x09000000)
+   RNC2_SEG(grass, 0x09000000)
+   RNC2_SEG(outside, 0x09000000)
+   RNC2_SEG(inside, 0x09000000)
+   RNC2_SEG(effect, 0x0B000000)
 
 #define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8)
 #define DEFINE_LEVEL(_0, _1, _2, folder, _4, _5, _6, _7, _8, _9, _10) STANDARD_LEVEL(folder)

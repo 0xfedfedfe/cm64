@@ -70,13 +70,13 @@ static const LevelScript script_func_local_4[] = {
 
 const LevelScript level_hmc_entry[] = {
     INIT_LEVEL(),
-    LOAD_MIO0(        /*seg*/ 0x07, _hmc_segment_7SegmentRomStart, _hmc_segment_7SegmentRomEnd),
-    LOAD_MIO0_TEXTURE(/*seg*/ 0x09, _cave_mio0SegmentRomStart, _cave_mio0SegmentRomEnd),
-    LOAD_MIO0(        /*seg*/ 0x05, _group6_mio0SegmentRomStart, _group6_mio0SegmentRomEnd),
+    LOAD_RNC2(        /*seg*/ 0x07, _hmc_segment_7SegmentRomStart, _hmc_segment_7SegmentRomEnd),
+    LOAD_RNC2_TEXTURE(/*seg*/ 0x09, _cave_rnc2SegmentRomStart, _cave_rnc2SegmentRomEnd),
+    LOAD_RNC2(        /*seg*/ 0x05, _group6_rnc2SegmentRomStart, _group6_rnc2SegmentRomEnd),
     LOAD_RAW(         /*seg*/ 0x0C, _group6_geoSegmentRomStart, _group6_geoSegmentRomEnd),
-    LOAD_MIO0(        /*seg*/ 0x06, _group17_mio0SegmentRomStart, _group17_mio0SegmentRomEnd),
+    LOAD_RNC2(        /*seg*/ 0x06, _group17_rnc2SegmentRomStart, _group17_rnc2SegmentRomEnd),
     LOAD_RAW(         /*seg*/ 0x0D, _group17_geoSegmentRomStart, _group17_geoSegmentRomEnd),
-    LOAD_MIO0(        /*seg*/ 0x08, _common0_mio0SegmentRomStart, _common0_mio0SegmentRomEnd),
+    LOAD_RNC2(        /*seg*/ 0x08, _common0_rnc2SegmentRomStart, _common0_rnc2SegmentRomEnd),
     LOAD_RAW(         /*seg*/ 0x0F, _common0_geoSegmentRomStart,  _common0_geoSegmentRomEnd),
     ALLOC_LEVEL_POOL(),
     MARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),

@@ -46,7 +46,7 @@ __pycache__/*
 doxygen/doxygen/*
 build/*
 *.dump
-*.mio0
+*.rnc2
 *.z64
 *.map
 .assets-local.txt

@@ -440,14 +440,14 @@ void *load_segment_decompress(s32 segment, u8 *srcStart, u8 *srcEnd) {
     u32 compSize = ALIGN16(srcEnd - srcStart);
     u8 *compressed = main_pool_alloc(compSize, MEMORY_POOL_RIGHT);
 
-    // Decompressed size from mio0 header
+    // Decompressed size from rnc2 header
     u32 *size = (u32 *) (compressed + 4);
 
     if (compressed != NULL) {
         dma_read(compressed, srcStart, srcEnd);
         dest = main_pool_alloc(*size, MEMORY_POOL_LEFT);
         if (dest != NULL) {
-            decompress(compressed, dest);
+            Propack_UnpackM2(compressed, dest);
             set_segment_base_addr(segment, dest);
             main_pool_free(compressed);
         } else {
@@ -465,7 +465,7 @@ void *load_segment_decompress_heap(u32 segment, u8 *srcStart, u8 *srcEnd) {
 
     if (compressed != NULL) {
         dma_read(compressed, srcStart, srcEnd);
-        decompress(compressed, gDecompressionHeap);
+        Propack_UnpackM2(compressed, gDecompressionHeap);
         set_segment_base_addr(segment, gDecompressionHeap);
         main_pool_free(compressed);
     } else {

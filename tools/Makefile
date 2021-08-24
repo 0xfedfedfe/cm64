@@ -7,7 +7,7 @@ CC           := gcc
 CXX          := g++
 CFLAGS       := -I . -Wall -Wextra -Wno-unused-parameter -pedantic -O2 -s
 LDFLAGS      := -lm
-ALL_PROGRAMS := armips n64graphics n64graphics_ci mio0 n64cksum textconv patch_elf_32bit aifc_decode aiff_extract_codebook vadpcm_enc tabledesign extract_data_for_mio skyconv
+ALL_PROGRAMS := armips n64graphics n64graphics_ci mio0 n64cksum textconv patch_elf_32bit aifc_decode aiff_extract_codebook vadpcm_enc tabledesign extract_data_for_mio skyconv propack
 LIBAUDIOFILE := audiofile/libaudiofile.a
 
 # Only build armips from tools if it is not found on the system
@@ -57,6 +57,8 @@ armips_LDFLAGS := -pthread
 ifeq ($(HOST_ENV),MinGW)
   armips_LDFLAGS += -municode
 endif
+
+propack_SOURCES := propack.c
 
 all-except-recomp: $(LIBAUDIOFILE) $(BUILD_PROGRAMS)
 

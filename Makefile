@@ -32,13 +32,9 @@ $(eval $(call validate-option,COMPILER,ido gcc))
 # Automatic settings only for ports
 ifeq ($(TARGET_N64),0)
 
-<<<<<<< HEAD
   COMPILER := gcc
   NON_MATCHING := 1
   GRUCODE := f3dex2e
-=======
-  GRUCODE := f3dex2
->>>>>>> e187430 (weird ido issue)
   TARGET_WINDOWS := 0
   ifeq ($(TARGET_WEB),0)
     ifeq ($(OS),Windows_NT)
@@ -160,13 +156,8 @@ ifeq      ($(COMPILER),ido)
   endif
 
   MIPSISET := -mips2
-<<<<<<< HEAD
 else ifeq ($(COMPILER),gcc)
   NON_MATCHING := 1
-=======
-else
-  ifeq ($(COMPILER),gcc)
->>>>>>> e187430 (weird ido issue)
   MIPSISET     := -mips3
   OPT_FLAGS    := -O2
 endif
@@ -264,7 +255,7 @@ ROM            := $(BUILD_DIR)/$(TARGET).z64
 ELF            := $(BUILD_DIR)/$(TARGET).elf
 LIBULTRA       := $(BUILD_DIR)/libultra.a
 LD_SCRIPT      := sm64.ld
-MIO0_DIR       := $(BUILD_DIR)/bin
+RNC2_DIR       := $(BUILD_DIR)/bin
 SOUND_BIN_DIR  := $(BUILD_DIR)/sound
 TEXTURE_DIR    := textures
 ACTOR_DIR      := actors
@@ -505,7 +496,7 @@ endif
 #==============================================================================#
 
 # N64 tools
-MIO0TOOL              := $(TOOLS_DIR)/mio0
+RNC2TOOL              := $(TOOLS_DIR)/propack
 N64CKSUM              := $(TOOLS_DIR)/n64cksum
 N64GRAPHICS           := $(TOOLS_DIR)/n64graphics
 N64GRAPHICS_CI        := $(TOOLS_DIR)/n64graphics_ci
@@ -677,13 +668,13 @@ $(BUILD_DIR)/levels/%/leveldata.bin: $(BUILD_DIR)/levels/%/leveldata.elf
 	$(V)$(EXTRACT_DATA_FOR_MIO) $< $@
 
 # Compress binary file
-$(BUILD_DIR)/%.mio0: $(BUILD_DIR)/%.bin
+$(BUILD_DIR)/%.rnc2: $(BUILD_DIR)/%.bin
 	$(call print,Compressing:,$<,$@)
-	$(V)$(MIO0TOOL) $< $@
+	$(V)$(RNC2TOOL) p $< $@ -m=2
 
-# convert binary mio0 to object file
-$(BUILD_DIR)/%.mio0.o: $(BUILD_DIR)/%.mio0
-	$(call print,Converting MIO0 to ELF:,$<,$@)
+# convert binary rnc2 to object file
+$(BUILD_DIR)/%.rnc2.o: $(BUILD_DIR)/%.rnc2
+	$(call print,Converting RNC2 to ELF:,$<,$@)
 	$(V)$(LD) -r -b binary $< -o $@
 endif
 
@@ -876,7 +867,7 @@ $(BUILD_DIR)/libgoddard.a: $(GODDARD_O_FILES)
 	$(V)$(AR) rcs -o $@ $(GODDARD_O_FILES)
 
 # Link SM64 ELF file
-$(ELF): $(O_FILES) $(MIO0_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/$(LD_SCRIPT) undefined_syms.txt $(BUILD_DIR)/libultra.a $(BUILD_DIR)/libgoddard.a
+$(ELF): $(O_FILES) $(RNC2_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/$(LD_SCRIPT) undefined_syms.txt $(BUILD_DIR)/libultra.a $(BUILD_DIR)/libgoddard.a
 	@$(PRINT) "$(GREEN)Linking ELF file:  $(BLUE)$@ $(NO_COL)\n"
 	$(V)$(LD) -L $(BUILD_DIR) -T undefined_syms.txt -T $(BUILD_DIR)/$(LD_SCRIPT) -Map $(BUILD_DIR)/sm64.$(VERSION).map --no-check-sections $(addprefix -R ,$(SEG_FILES)) -o $@ $(O_FILES) -lultra -lgoddard
 
@@ -890,10 +881,10 @@ $(BUILD_DIR)/$(TARGET).objdump: $(ELF)
 	$(OBJDUMP) -D $< > $@
 
 else
-$(EXE): $(O_FILES) $(MIO0_FILES:.mio0=.o) $(ULTRA_O_FILES) $(GODDARD_O_FILES)
-	$(LD) -L $(BUILD_DIR) -o $@ $(O_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(LDFLAGS)
+$(EXE): $(O_FILES) $(RNC2_FILES:.rnc2=.o) $(ULTRA_O_FILES) $(GODDARD_O_FILES)
+	$(call print,Linking EXE:,$<,$@)
+	$(V)$(LD) -L $(BUILD_DIR) -o $@ $(O_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(BUILD_DIR)/bin/*_skybox.o $(LDFLAGS)
 endif
-
 
 
 .PHONY: all clean distclean default diff test load libultra

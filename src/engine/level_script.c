@@ -279,7 +279,7 @@ static void level_cmd_load_raw(void) {
     sCurrentCmd = CMD_NEXT;
 }
 
-static void level_cmd_load_mio0(void) {
+static void level_cmd_load_rnc2(void) {
     load_segment_decompress(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8));
     sCurrentCmd = CMD_NEXT;
 }
@@ -316,7 +316,7 @@ static void level_cmd_load_mario_head(void) {
     sCurrentCmd = CMD_NEXT;
 }
 
-static void level_cmd_load_mio0_texture(void) {
+static void level_cmd_load_rnc2_texture(void) {
     load_segment_decompress_heap(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8));
     sCurrentCmd = CMD_NEXT;
 }
@@ -806,9 +806,9 @@ static void (*LevelScriptJumpTable[])(void) = {
     /*15*/ level_cmd_pop_pool_state,
     /*16*/ level_cmd_load_to_fixed_address,
     /*17*/ level_cmd_load_raw,
-    /*18*/ level_cmd_load_mio0,
+    /*18*/ level_cmd_load_rnc2,
     /*19*/ level_cmd_load_mario_head,
-    /*1A*/ level_cmd_load_mio0_texture,
+    /*1A*/ level_cmd_load_rnc2_texture,
     /*1B*/ level_cmd_init_level,
     /*1C*/ level_cmd_clear_level,
     /*1D*/ level_cmd_alloc_level_pool,

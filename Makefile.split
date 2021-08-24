@@ -44,12 +44,12 @@ SEG_FILES := \
     $(ACTOR_GROUPS:%=$(BUILD_DIR)/actors/%.elf) \
     $(LEVEL_FILES:%=$(BUILD_DIR)/levels/%.elf)
 
-MIO0_FILES := \
-    $(SEGMENTS:%=$(BUILD_DIR)/bin/%.mio0) \
-    $(ACTOR_GROUPS:%=$(BUILD_DIR)/actors/%.mio0) \
-    $(LEVEL_FILES:%=$(BUILD_DIR)/levels/%.mio0)
+RNC2_FILES := \
+    $(SEGMENTS:%=$(BUILD_DIR)/bin/%.rnc2) \
+    $(ACTOR_GROUPS:%=$(BUILD_DIR)/actors/%.rnc2) \
+    $(LEVEL_FILES:%=$(BUILD_DIR)/levels/%.rnc2)
 
-MIO0_OBJ_FILES := $(MIO0_FILES:.mio0=.mio0.o)
+RNC2_OBJ_FILES := $(RNC2_FILES:.rnc2=.rnc2.o)
 
 
 # --------------------------------------

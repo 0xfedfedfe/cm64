@@ -663,7 +663,7 @@ void setup_game_memory(void) {
     // Setup Level Script Entry
     load_segment(0x10, _entrySegmentRomStart, _entrySegmentRomEnd, MEMORY_POOL_LEFT);
     // Setup Segment 2 (Fonts, Text, etc)
-    load_segment_decompress(2, _segment2_mio0SegmentRomStart, _segment2_mio0SegmentRomEnd);
+    load_segment_decompress(2, _segment2_rnc2SegmentRomStart, _segment2_rnc2SegmentRomEnd);
 }
 
 #ifndef TARGET_N64
