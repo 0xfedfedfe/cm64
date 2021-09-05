@@ -249,7 +249,7 @@ static void geo_process_perspective(struct GraphNodePerspective *node) {
         f32 aspect = (f32) gCurGraphNodeRoot->width / (f32) gCurGraphNodeRoot->height;
 #endif
 
-        guPerspective(mtx, &perspNorm, node->fov, aspect, node->near, node->far, 1.0f);
+        guPerspective(mtx, &perspNorm, node->fov, aspect, node->far / 300, node->far, 1.0f);
         gSPPerspNormalize(gDisplayListHead++, perspNorm);
 
         gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx), G_MTX_PROJECTION | G_MTX_LOAD | G_MTX_NOPUSH);

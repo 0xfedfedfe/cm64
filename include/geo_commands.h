@@ -111,16 +111,15 @@
  * 0x0A: Create camera frustum scene graph node
  *   0x01: u8  if nonzero, enable function field
  *   0x02: s16 field of view
- *   0x04: s16 near
- *   0x06: s16 far
+ *   0x04: s16 near (unused)
  *   0x08: [GraphNodeFunc function]
 */
 #define GEO_CAMERA_FRUSTUM(fov, near, far) \
     CMD_BBH(0x0A, 0x00, fov), \
-    CMD_HH(near, far)
+    CMD_HH(far, 0x0000)
 #define GEO_CAMERA_FRUSTUM_WITH_FUNC(fov, near, far, func) \
     CMD_BBH(0x0A, 0x01, fov), \
-    CMD_HH(near, far), \
+    CMD_HH(far, 0x0000), \
     CMD_PTR(func)
 
 /**
