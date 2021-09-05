@@ -117,6 +117,7 @@ SECTIONS
       BUILD_DIR/src/game/profiler.o(.text);
       BUILD_DIR/asm/decompress.o(.text);
       BUILD_DIR/asm/crash.o(.text);
+      BUILD_DIR/src/game/crash.o(.text);
       BUILD_DIR/src/game/camera.o(.text);
       BUILD_DIR/src/game/debug_course.o(.text);
       BUILD_DIR/src/game/object_list_processor.o(.text);
@@ -461,6 +462,7 @@ SECTIONS
       BUILD_DIR/src/game/rendering_graph_node.o(.data*);
       BUILD_DIR/src/game/profiler.o(.data*);
       BUILD_DIR/asm/decompress.o(.data*);
+      BUILD_DIR/src/game/crash.o(.data*);
       BUILD_DIR/src/game/camera.o(.data*);
       BUILD_DIR/src/game/object_list_processor.o(.data*);
 #ifndef VERSION_EU
@@ -594,6 +596,7 @@ SECTIONS
       BUILD_DIR/src/game/geo_misc.o(.rodata*);
       BUILD_DIR/src/game/paintings.o(.rodata*);
       BUILD_DIR/src/game/print.o(.rodata*);
+      BUILD_DIR/src/game/crash.o(.rodata*);
       BUILD_DIR/src/game/ingame_menu.o(.rodata*);
       BUILD_DIR/src/game/envfx_snow.o(.rodata*);
       BUILD_DIR/src/game/envfx_bubbles.o(.rodata*);
