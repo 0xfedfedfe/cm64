@@ -69,4 +69,14 @@
 #define VIRTUAL_TO_PHYSICAL2(addr)  ((void *)(addr))
 #endif
 
+#ifdef TARGET_N64
+#ifndef CRASH_SCREEN_INCLUDED
+extern void _n64_assert(const char* pFile, int nLine, const char *pExpression, int nStopProgram);
+#endif
+#define CM64_ASSERT(expr) if (!(expr)) do { _n64_assert(__FILE__, __LINE__, #expr, 1); } while (0)
+#else
+#include <assert.h>
+#define CM64_ASSERT(expr) assert(expr);
+#endif
+
 #endif // MACROS_H
