@@ -16,7 +16,7 @@ DEFINES :=
 # 'make clean' may be required first.
 
 # Build for the N64 (turn this off for ports)
-TARGET_N64 ?= 0
+TARGET_N64 ?= 1
 # Build for Emscripten/WebGL
 TARGET_WEB ?= 0
 # Compiler to use (ido or gcc)
@@ -386,10 +386,6 @@ OBJCOPY   := $(CROSS)objcopy
 TARGET_CFLAGS := -nostdinc -DTARGET_N64 -D_LANGUAGE_C
 CC_CFLAGS := -fno-builtin
 
-# Check code syntax with host compiler
-CC_CHECK := gcc
-CC_CHECK_CFLAGS := -fsyntax-only -fsigned-char $(CC_CFLAGS) $(TARGET_CFLAGS) -std=gnu90 -Wall -Wextra -Wno-format-security -Wno-main -DNON_MATCHING -DAVOID_UB $(DEF_INC_CFLAGS)
-
 # C compiler options
 CFLAGS = -G 0 $(OPT_FLAGS) $(TARGET_CFLAGS) $(MIPSISET) $(DEF_INC_CFLAGS)
 ifeq ($(COMPILER),gcc)
@@ -474,14 +470,18 @@ endif
 
 GFX_CFLAGS += -DWIDESCREEN
 
-CC_CHECK_CFLAGS := -fsyntax-only -fsigned-char $(DEF_INC_CFLAGS) -Wall -Wextra -Wno-format-security -D_LANGUAGE_C $(PLATFORM_CFLAGS) $(GFX_CFLAGS)
-CFLAGS := $(OPT_FLAGS) $(DEF_INC_CFLAGS) -D_LANGUAGE_C $(PLATFORM_CFLAGS) $(GFX_CFLAGS) -fno-strict-aliasing -fwrapv -march=native
+# CC_CHECK_CFLAGS := -fsyntax-only -fsigned-char $(DEF_INC_CFLAGS) -Wall -Wextra -Wno-format-security -D_LANGUAGE_C $(TARGET_CFLAGS) $(PLATFORM_CFLAGS) $(GFX_CFLAGS)
+CFLAGS := $(OPT_FLAGS) $(DEF_INC_CFLAGS) -D_LANGUAGE_C $(TARGET_CFLAGS) $(PLATFORM_CFLAGS) $(GFX_CFLAGS) -fno-strict-aliasing -fwrapv -march=native
 
 ASFLAGS := -I include -I $(BUILD_DIR) $(foreach d,$(DEFINES),--defsym $(d))
 
 LDFLAGS := $(PLATFORM_LDFLAGS) $(GFX_LDFLAGS)
 
 endif
+
+# Check code syntax with host compiler
+CC_CHECK = gcc
+CC_CHECK_CFLAGS += -fsyntax-only -fsigned-char $(DEF_INC_CFLAGS) -Wall -Wextra -Wno-format-security -D_LANGUAGE_C $(TARGET_CFLAGS) $(PLATFORM_CFLAGS) $(GFX_CFLAGS)
 
 # Prefer clang as C preprocessor if installed on the system
 ifneq (,$(call find-command,clang))
@@ -608,7 +608,7 @@ else
   endif
 endif
 
-ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(GODDARD_SRC_DIRS) $(ULTRA_SRC_DIRS) $(ULTRA_BIN_DIRS) $(BIN_DIRS) $(TEXTURE_DIRS) $(TEXT_DIRS) $(SOUND_SAMPLE_DIRS) $(addprefix levels/,$(LEVEL_DIRS)) rsp include) $(MIO0_DIR) $(addprefix $(MIO0_DIR)/,$(VERSION)) $(SOUND_BIN_DIR) $(SOUND_BIN_DIR)/sequences/$(VERSION)
+ALL_DIRS := $(BUILD_DIR) $(addprefix $(BUILD_DIR)/,$(SRC_DIRS) $(GODDARD_SRC_DIRS) $(ULTRA_SRC_DIRS) $(ULTRA_BIN_DIRS) $(BIN_DIRS) $(TEXTURE_DIRS) $(TEXT_DIRS) $(SOUND_SAMPLE_DIRS) $(addprefix levels/,$(LEVEL_DIRS)) rsp include) $(RNC2_DIR) $(addprefix $(RNC2_DIR)/,$(VERSION)) $(SOUND_BIN_DIR) $(SOUND_BIN_DIR)/sequences/$(VERSION)
 
 # Make sure build directory exists before compiling anything
 DUMMY != mkdir -p $(ALL_DIRS)
@@ -773,16 +773,16 @@ $(BUILD_DIR)/include/level_headers.h: levels/level_headers.h.in
 
 # Compile C/C++ code
 $(BUILD_DIR)/%.o: %.cpp
-	$(call print,Compiling:,$<,$@)
-	@$(CXX) -fsyntax-only $(CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
+	$(V)$(call print,Compiling:,$<,$@)
+	$(V)$(CXX) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
 	$(V)$(CXX) -c $(CFLAGS) -o $@ $<
 $(BUILD_DIR)/%.o: %.c
 	$(call print,Compiling:,$<,$@)
-	@$(CC_CHECK) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
+	$(V)$(CC_CHECK) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
 	$(V)$(CC) -c $(CFLAGS) -o $@ $<
 $(BUILD_DIR)/%.o: $(BUILD_DIR)/%.c
 	$(call print,Compiling:,$<,$@)
-	@$(CC_CHECK) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
+	$(V)$(CC_CHECK) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
 	$(V)$(CC) -c $(CFLAGS) -o $@ $<
 
 # Alternate compiler flags needed for matching
@@ -883,8 +883,8 @@ $(BUILD_DIR)/$(TARGET).objdump: $(ELF)
 
 else
 $(EXE): $(O_FILES) $(RNC2_FILES:.rnc2=.o) $(ULTRA_O_FILES) $(GODDARD_O_FILES)
-	$(call print,Linking EXE:,$<,$@)
-	$(V)$(LD) -L $(BUILD_DIR) -o $@ $(O_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(BUILD_DIR)/bin/*_skybox.o $(LDFLAGS)
+	@$(PRINT) "$(GREEN)Linking EXE... $(NO_COL)\n"
+	$(V)$(LD) -L $(BUILD_DIR) -o $@ $(O_FILES) $(ULTRA_O_FILES) $(GODDARD_O_FILES) $(LDFLAGS)
 endif
 
 
