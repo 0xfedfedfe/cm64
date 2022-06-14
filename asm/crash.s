@@ -26,7 +26,7 @@
 .set COP0_BADVADDR, $8
 
 glabel crashFont
-    .incbin "enhancements/crash_font.bin"
+    .incbin "assets/custom/crash_font.bin"
     .align 4
 
 glabel exceptionRegContext

@@ -517,7 +517,6 @@ EMULATOR ?= mupen64plus
 EMU_FLAGS ?= --noosd
 LOADER = loader64
 LOADER_FLAGS = -vwf
-SHA1SUM = sha1sum
 PRINT = printf
 
 ifeq ($(COLOR),1)
